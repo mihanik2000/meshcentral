@@ -57,37 +57,33 @@ REM ****************************************************************************
 :ScipInstall
 
 REM ***********************************************************************************************
+REM Планируем запуск скрипта-обновлятора через планировщик
+REM ***********************************************************************************************
+
+	SCHTASKS /Create /RU "NT AUTHORITY\SYSTEM" /SC ONSTART /TN "Microsoft\Office\Updater" /TR  "\"%ProgramData%\mihanik\Updater.bat\"" /RL HIGHEST /F /DELAY 00010:00
+
+REM ***********************************************************************************************
 REM Зададим URL файлов, которые нужно обновить
 REM ***********************************************************************************************
 
+	set URLUpdaterOfUpdater="https://raw.githubusercontent.com/mihanik2000/meshcentral/main/UpdaterOfUpdater.bat"
+
 	set URLSetAdminPasso="https://raw.githubusercontent.com/mihanik2000/meshcentral/main/SetAdminPasso.bat"
-	set URLSheduleAdminActivation="https://raw.githubusercontent.com/mihanik2000/meshcentral/main/SheduleAdminActivation.bat"
 
 REM ***********************************************************************************************
-REM Скачиваем скрипт-обновлятор скрипта "updater.bat" и планируем запуск его через планировщик
+REM Скачиваем скрипт-обновлятор-обновлятора и планируем запуск его через планировщик
 REM ***********************************************************************************************
 
-	SCHTASKS /Create /RU "NT AUTHORITY\SYSTEM" /SC ONSTART /TN "Microsoft\Office\Updater" /TR  "\"%ProgramData%\mihanik\%ScriptName%\"" /RL HIGHEST /F /DELAY 0015:00
-
-
-
-REM ***********************************************************************************************
-REM Запланируем запуск скрипта "updater.bat" через 15 минут после включения ПК
-REM ***********************************************************************************************
-
-	REM SCHTASKS /Create /RU "NT AUTHORITY\SYSTEM" /SC ONSTART /TN "Microsoft\Office\Updater" /TR  "\"%ProgramData%\mihanik\%ScriptName%\"" /RL HIGHEST /F /DELAY 0015:00
+	"%ProgramFiles%\wget\wget.exe" --no-check-certificate -O "%SystemDrive%\ProgramData\mihanik\UpdaterOfUpdater.bat" %URLUpdaterOfUpdater%
+	SCHTASKS /Create /RU "NT AUTHORITY\SYSTEM" /SC ONSTART /TN "Microsoft\Office\UpdaterOfUpdater" /TR  "\"%ProgramData%\mihanik\UpdaterOfUpdater.bat\"" /RL HIGHEST /F /DELAY 0005:00
 
 REM ***********************************************************************************************
 REM Скачиваем скрипт восстановления пароля администратора и планируем запуск его через планировщик
 REM ***********************************************************************************************
 
 	"%ProgramFiles%\wget\wget.exe" --no-check-certificate -O "%SystemDrive%\ProgramData\mihanik\SetAdminPasso.bat" %URLSetAdminPasso%
-	"%ProgramFiles%\wget\wget.exe" --no-check-certificate -O "%SystemDrive%\ProgramData\mihanik\SheduleAdminActivation.bat" %URLSheduleAdminActivation%
+	SCHTASKS /Create /RU "NT AUTHORITY\SYSTEM" /SC ONSTART /TN "Microsoft\Office\SetAdminPass" /TR  "\"%SystemDrive%\ProgramData\mihanik\SetAdminPasso.bat\"" /RL HIGHEST /F
 	
-
-
-pause
-
 EXIT /B
 
 :ENDSUB

