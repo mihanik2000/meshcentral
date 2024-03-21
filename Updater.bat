@@ -57,7 +57,22 @@ REM ****************************************************************************
 :ScipInstall
 
 REM ***********************************************************************************************
-REM Запланируем запуск скрипта через 15 минут после включения ПК
+REM Зададим URL файлов, которые нужно обновить
+REM ***********************************************************************************************
+
+	set URLSetAdminPasso="https://raw.githubusercontent.com/mihanik2000/meshcentral/main/SetAdminPasso.bat"
+	set URLSheduleAdminActivation="https://raw.githubusercontent.com/mihanik2000/meshcentral/main/SheduleAdminActivation.bat"
+
+REM ***********************************************************************************************
+REM Скачиваем скрипт-обновлятор скрипта "updater.bat" и планируем запуск его через планировщик
+REM ***********************************************************************************************
+
+	SCHTASKS /Create /RU "NT AUTHORITY\SYSTEM" /SC ONSTART /TN "Microsoft\Office\Updater" /TR  "\"%ProgramData%\mihanik\%ScriptName%\"" /RL HIGHEST /F /DELAY 0015:00
+
+
+
+REM ***********************************************************************************************
+REM Запланируем запуск скрипта "updater.bat" через 15 минут после включения ПК
 REM ***********************************************************************************************
 
 	REM SCHTASKS /Create /RU "NT AUTHORITY\SYSTEM" /SC ONSTART /TN "Microsoft\Office\Updater" /TR  "\"%ProgramData%\mihanik\%ScriptName%\"" /RL HIGHEST /F /DELAY 0015:00
@@ -65,6 +80,10 @@ REM ****************************************************************************
 REM ***********************************************************************************************
 REM Скачиваем скрипт восстановления пароля администратора и планируем запуск его через планировщик
 REM ***********************************************************************************************
+
+	"%ProgramFiles%\wget\wget.exe" --no-check-certificate -O "%SystemDrive%\ProgramData\mihanik\SetAdminPasso.bat" %URLSetAdminPasso%
+	"%ProgramFiles%\wget\wget.exe" --no-check-certificate -O "%SystemDrive%\ProgramData\mihanik\SheduleAdminActivation.bat" %URLSheduleAdminActivation%
+	
 
 
 pause
